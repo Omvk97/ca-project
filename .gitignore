@@ -3,6 +3,12 @@ __pycache__/
 *.py[cod]
 *$py.class
 venv
+.DS_Store
+
+# Build and distro stuff
+build
+ca_project*
+dist
 
 # Ignore both app and test db
 app.db

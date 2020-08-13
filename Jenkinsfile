@@ -28,20 +28,40 @@ pipeline {
         }
       }
     }
-    stage('Containerization & Push') {
-      agent any
-      // when { branch 'master' }
-      environment {
-        DOCKERCREDS = credentials('docker_login') //use the credentials just created in this stage
-      }
-      options {
-        skipDefaultCheckout()
-      }
-      steps {
-        unstash 'code'
-        sh 'scripts/build-docker.sh'
-        sh 'echo "$DOCKERCREDS_PSW" | docker login -u "$DOCKERCREDS_USR" --password-stdin'
-        sh 'scripts/push-docker.sh'
+    stage('Parallel execution') {
+      parallel {
+        stage('Containerization & Push') {
+          agent any
+          when { branch 'master' }
+          environment {
+            DOCKERCREDS = credentials('docker_login') //use the credentials just created in this stage
+          }
+          options {
+            skipDefaultCheckout()
+          }
+          steps {
+            unstash 'code'
+            sh 'scripts/build-docker.sh'
+            sh 'echo "$DOCKERCREDS_PSW" | docker login -u "$DOCKERCREDS_USR" --password-stdin'
+            sh 'scripts/push-docker.sh'
+          }
+        }
+
+        stage('Distro building') {
+          agent {
+            docker {
+              image 'python:3.8-slim'
+            }
+          }
+          options {
+            skipDefaultCheckout()
+          }
+          steps {
+            unstash 'code'
+            sh 'scripts/build-distro.sh'
+            archiveArtifacts(artifacts: 'dist/', onlyIfSuccessful: true)
+          }
+        }
       }
     }
   }
