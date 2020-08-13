@@ -66,7 +66,8 @@ pipeline {
     }
     stage('Deployment') {
       agent any
-      // when { branch 'master' }
+      when { branch 'master' }
+
       options {
         skipDefaultCheckout()
       }
