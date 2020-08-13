@@ -1,0 +1,7 @@
+version: "3"
+
+services:
+  pythonapp:
+    image: omvk97/ca-project
+    ports:
+       - 5000:5000

@@ -64,6 +64,20 @@ pipeline {
         }
       }
     }
+    stage('Deployment') {
+      agent any
+      // when { branch 'master' }
+      options {
+        skipDefaultCheckout()
+      }
+      steps {
+        unstash 'code'
+        sshagent(credentials: ['prod_server_ssh_key']) {
+          sh 'scp docker-compose.yml ubuntu@35.205.95.108:'
+          sh 'ssh -o StrictHostKeyChecking=no ubuntu@35.205.95.108 docker-compose up --force-recreate -d'
+        }
+      }
+    }
   }
   post {
     always {
