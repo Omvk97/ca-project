@@ -2,7 +2,11 @@
 __pycache__/
 *.py[cod]
 *$py.class
+venv
 
 # Ignore both app and test db
 app.db
 test.db
+
+.idea/
+.vscode/
