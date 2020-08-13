@@ -64,6 +64,18 @@ pipeline {
         }
       }
     }
+
+    stage('Deployment test') {
+      agent any
+      options {
+        skipDefaultCheckout()
+      }
+      steps {
+        unstash 'code'
+        sh 'scripts/functional-test.sh'
+      }
+    }
+
     stage('Deployment') {
       agent any
       when { branch 'master' }
