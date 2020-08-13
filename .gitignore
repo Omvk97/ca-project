@@ -10,3 +10,5 @@ test.db
 
 .idea/
 .vscode/
+
+test-reports/
